@@ -1,0 +1,30 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# 1. Load data
+data = pd.read_csv('water_quality_data.csv')
+
+# 2. Features and target
+X = data.drop('quality', axis=1)  # input features
+y = data['quality']               # target: 1 = safe, 0 = unsafe
+
+# 3. Split into training and testing data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 4. Train a Random Forest Classifier
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# 5. Make predictions
+y_pred = model.predict(X_test)
+
+# 6. Show performance
+print("Water Quality Prediction Report:")
+print(classification_report(y_test, y_pred))
+
+# 7. Predict new sample
+new_sample = [[7.2, 3.1, 450]]  # Example: [pH, turbidity, conductivity]
+prediction = model.predict(new_sample)
+print("Prediction for new sample:", "Safe" if prediction[0] == 1 else "Unsafe")
